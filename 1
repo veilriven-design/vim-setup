@@ -1,0 +1,73 @@
+" ==================== Basic Settings ====================
+set nocompatible                " Use Vim settings, not vi
+syntax on                       " Syntax highlighting
+filetype plugin indent on       " Enable file type detection + plugins + indent
+
+set number                      " Line numbers
+set relativenumber              " Relative numbers (great for movement)
+set cursorline                  " Highlight current line
+
+set tabstop=4                   " Tab width
+set shiftwidth=4                " Indent width
+set expandtab                   " Use spaces instead of tabs
+set smarttab
+set autoindent
+set smartindent
+
+" ==================== Search ====================
+set ignorecase                  " Case insensitive search
+set smartcase                   " But become case-sensitive if uppercase used
+set hlsearch                    " Highlight search results
+set incsearch                   " Incremental search
+
+" ==================== Quality of Life ====================
+set wildmenu                    " Better command-line completion
+set showcmd                     " Show partial commands
+set ruler                       " Show cursor position
+set laststatus=2                " Always show status line
+set scrolloff=8                 " Keep 8 lines above/below cursor
+
+set backspace=indent,eol,start  " Better backspacing
+set hidden                      " Allow switching buffers without saving
+
+" ==================== C / Systems Specific ====================
+" Use clang as the default compiler
+set makeprg=clang\ -Wall\ -Wextra\ -std=c17\ -O2\ %\ -o\ %:r
+
+" Quick build command
+nnoremap <F5> :make<CR>
+
+" Open quickfix window after make
+autocmd QuickFixCmdPost * cwindow
+
+" Better C indentation
+let g:c_syntax_for_h = 1
+
+" ==================== Tags & Navigation ====================
+set tags=./tags;                " Look for tags file up the directory tree
+
+" ==================== Colors & Theme ====================
+" Good readable colors for dark terminal (OpenBSD default)
+colorscheme default
+highlight Normal ctermbg=black ctermfg=white
+highlight Comment ctermfg=gray
+
+" ==================== Status Line ====================
+set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (%l/%L,\ %c)\ %p%%
+
+" ==================== Useful Mappings ====================
+" Clear search highlight
+nnoremap <leader><space> :noh<cr>
+
+" Toggle relative numbering
+nnoremap <leader>r :set relativenumber!<cr>
+
+" Save with sudo (if you open file without sudo)
+cmap w!! w !doas tee > /dev/null %
+
+" ==================== Auto commands for C files ====================
+augroup c_files
+    autocmd!
+    autocmd FileType c,cpp setlocal commentstring=//\ %s
+    autocmd BufWritePre *.c,*.h :%s/\s\+$//e   " Remove trailing whitespace
+augroup END
